@@ -94,4 +94,13 @@ public class ForumController {
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
+
+    /*
+    コメント投稿処理
+     */
+
+    /*
+    コメント表示処理？上のやつで兼ねる？
+     */
+
 }
