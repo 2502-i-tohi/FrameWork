@@ -110,9 +110,9 @@ public class ForumController {
     コメント投稿処理
      */
     @PostMapping("/comment/{id}")
-    public ModelAndView commentContent(@PathVariable Integer contentId,
+    public ModelAndView commentContent(@PathVariable Integer id,
                                        @ModelAttribute("formModel") CommentsForm commentsForm){
-        commentsForm.setContentId(contentId);
+        commentsForm.setContentId(id);
         // 返信をテーブルに格納
         commentsService.saveComments(commentsForm);
         // rootへリダイレクト

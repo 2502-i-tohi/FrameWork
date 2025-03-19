@@ -30,21 +30,24 @@
                 <input type="button" value="編集">
             </a>
         </div>
-        <div class="comment-area">
         <form method="post" th:action="@{/comment/{id}(id=${content.id})}" th:object="${formModel}">
-
+            <div class="comment-area">
                 <label>返信</label>
-                <textarea class="comment-box" name="comment" th:field="*{content}" size="20" maxlength="200"></textarea><br/>
+                <textarea class="comment-box" th:field="*{text}" size="20" maxlength="200"></textarea><br/>
                 <input type="submit" value="返信" />
-
+            </div>
         </form>
-        </div>
-        <div class="comment-icon" th:each="comment : ${comments}">
+        <div class="comment-icon" th:each="comment : ${comments}" th:if="${content.id == comment.contentId}">
             <div>
                 ID : <span th:text="${comment.id}"/>
             </div>
             <div class="text">
                 投稿 : <span th:text="${comment.text}"/>
+            </div>
+            <div class="edit-button">
+                <a th:href="@{/edit/{id}(id=${comment.id})}">
+                    <input type="button" value="編集">
+                </a>
             </div>
         </div>
     </div>
