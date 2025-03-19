@@ -1,6 +1,8 @@
 package com.example.forum.controller;
 
+import com.example.forum.controller.form.CommentsForm;
 import com.example.forum.controller.form.ReportForm;
+import com.example.forum.service.CommentsService;
 import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,9 @@ public class ForumController {
     @Autowired
     ReportService reportService;
 
+    @Autowired
+    CommentsService commentsService;
+
     /*
      * 投稿内容表示処理
      */
@@ -22,10 +27,16 @@ public class ForumController {
         ModelAndView mav = new ModelAndView();
         // 投稿を全件取得
         List<ReportForm> contentData = reportService.findAllReport();
+        // コメントを全件取得
+        List<CommentsForm> commentsData = commentsService.findAllReport();
+
+        CommentsForm commentsForm = new CommentsForm();
         // 画面遷移先を指定
         mav.setViewName("/top");
         // 投稿データオブジェクトを保管
+        mav.addObject("formModel", commentsForm);
         mav.addObject("contents", contentData);
+        mav.addObject("comments", commentsData);
         return mav;
     }
 
@@ -98,6 +109,15 @@ public class ForumController {
     /*
     コメント投稿処理
      */
+    @PostMapping("/comment/{id}")
+    public ModelAndView commentContent(@PathVariable Integer contentId,
+                                       @ModelAttribute("formModel") CommentsForm commentsForm){
+        commentsForm.setContentId(contentId);
+        // 返信をテーブルに格納
+        commentsService.saveComments(commentsForm);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
 
     /*
     コメント表示処理？上のやつで兼ねる？

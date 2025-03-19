@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReportForm {
+public class CommentsForm {
     private int id;
-    private String content;
+    private String text;
+    private int contentId;
 }

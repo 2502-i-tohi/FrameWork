@@ -30,6 +30,23 @@
                 <input type="button" value="編集">
             </a>
         </div>
+        <div class="comment-area">
+        <form method="post" th:action="@{/comment/{id}(id=${content.id})}" th:object="${formModel}">
+
+                <label>返信</label>
+                <textarea class="comment-box" name="comment" th:field="*{content}" size="20" maxlength="200"></textarea><br/>
+                <input type="submit" value="返信" />
+
+        </form>
+        </div>
+        <div class="comment-icon" th:each="comment : ${comments}">
+            <div>
+                ID : <span th:text="${comment.id}"/>
+            </div>
+            <div class="text">
+                投稿 : <span th:text="${comment.text}"/>
+            </div>
+        </div>
     </div>
 </div>
 </body>
