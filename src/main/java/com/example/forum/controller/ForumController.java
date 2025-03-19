@@ -112,6 +112,7 @@ public class ForumController {
     @PostMapping("/comment/{id}")
     public ModelAndView commentContent(@PathVariable Integer id,
                                        @ModelAttribute("formModel") CommentsForm commentsForm){
+        commentsForm.setId(0);
         commentsForm.setContentId(id);
         // 返信をテーブルに格納
         commentsService.saveComments(commentsForm);
@@ -120,7 +121,33 @@ public class ForumController {
     }
 
     /*
-    コメント表示処理？上のやつで兼ねる？
+    コメント編集画面表示処理
      */
+    @GetMapping("/edit-comments/{id}")
+    public ModelAndView commentsEditContent(@PathVariable Integer id) {
+        ModelAndView mav = new ModelAndView();
+        // 編集する投稿を取得
+        CommentsForm comments = commentsService.editReport(id);
+        // 編集する投稿をセット
+        mav.addObject("formModel", comments);
+        // 画面遷移先を指定
+        mav.setViewName("/edit-comments");
+        return mav;
+    }
 
+    /*
+    コメント編集処理
+     */
+    @PutMapping("/update-comments/{id}")
+    public ModelAndView updateCommentsContent (@PathVariable Integer id,
+                                       @RequestParam Integer contentId,
+                                       @ModelAttribute("formModel") CommentsForm comments) {
+        // UrlParameterのidを更新するentityにセット
+        comments.setId(id);
+        comments.setContentId(contentId);
+        // 編集した投稿を更新
+        commentsService.saveComments(comments);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
 }

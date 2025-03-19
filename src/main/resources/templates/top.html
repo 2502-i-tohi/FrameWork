@@ -45,7 +45,7 @@
                 投稿 : <span th:text="${comment.text}"/>
             </div>
             <div class="edit-button">
-                <a th:href="@{/edit/{id}(id=${comment.id})}">
+                <a th:href="@{/edit-comments/{id}(id=${comment.id})}">
                     <input type="button" value="編集">
                 </a>
             </div>
