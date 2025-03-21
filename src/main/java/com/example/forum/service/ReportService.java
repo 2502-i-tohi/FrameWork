@@ -6,6 +6,9 @@ import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class ReportService {
         Report report = new Report();
         report.setId(reqReport.getId());
         report.setContent(reqReport.getContent());
+        report.setCreatedAt(reqReport.getCreatedAt());
         return report;
     }
 
@@ -71,5 +75,38 @@ public class ReportService {
         results.add((Report) reportRepository.findById(id).orElse(null));
         List<ReportForm> reports = setReportForm(results);
         return reports.get(0);
+    }
+
+    /*
+    日付入力が両方アリのとき
+     */
+    public List<ReportForm> findByCreatedAtBetween(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atTime(LocalTime.MIN); // 開始日の00:00:00
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);   // 終了日の23:59:59
+        List<Report> results = reportRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        List<ReportForm> reports = setReportForm(results);
+        return reports;
+    }
+
+    /*
+    開始日のみ入力されているとき
+     */
+    public List<ReportForm> findByCreatedAtAfter(LocalDate startDate) {
+        LocalDateTime startDateTime = startDate.atTime(LocalTime.MIN); // 開始日の00:00:00
+        LocalDateTime endDateTime = LocalDateTime.now();              // 現在時刻
+        List<Report> results = reportRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        List<ReportForm> reports = setReportForm(results);
+        return reports;
+    }
+
+    /*
+    終了日のみ入力されているとき
+     */
+    public List<ReportForm> findByCreatedAtBefore(LocalDate endDate) {
+        LocalDateTime startDateTime = LocalDateTime.of(2020, 1, 1, 0, 0, 0); // 2020-01-01 00:00:00
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);     // 終了日の23:59:59
+        List<Report> results = reportRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        List<ReportForm> reports = setReportForm(results);
+        return reports;
     }
 }

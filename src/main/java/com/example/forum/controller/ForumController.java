@@ -5,10 +5,12 @@ import com.example.forum.controller.form.ReportForm;
 import com.example.forum.service.CommentsService;
 import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -23,10 +25,28 @@ public class ForumController {
      * 投稿内容表示処理
      */
     @GetMapping
-    public ModelAndView top() {
+    public ModelAndView top(@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         ModelAndView mav = new ModelAndView();
-        // 投稿を全件取得
-        List<ReportForm> contentData = reportService.findAllReport();
+        List<ReportForm> contentData;
+
+        // 開始日と終了日の両方が指定されている場合
+        if (startDate != null && endDate != null) {
+            contentData = reportService.findByCreatedAtBetween(startDate, endDate);
+        }
+        // 開始日のみ指定されている場合
+        else if (startDate != null) {
+            contentData = reportService.findByCreatedAtAfter(startDate);
+        }
+        // 終了日のみ指定されている場合
+        else if (endDate != null) {
+            contentData = reportService.findByCreatedAtBefore(endDate);
+        }
+        // どちらも指定されていない場合
+        else {
+            contentData = reportService.findAllReport();
+        }
+
         // コメントを全件取得
         List<CommentsForm> commentsData = commentsService.findAllReport();
 
