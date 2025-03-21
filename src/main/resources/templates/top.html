@@ -44,6 +44,11 @@
             <div class="text">
                 投稿 : <span th:text="${comment.text}"/>
             </div>
+            <div class="delete-button">
+                <form th:action="@{/delete-comments/{id}(id=${comment.id})}" th:method="delete">
+                    <input type="submit" value="削除">
+                </form>
+            </div>
             <div class="edit-button">
                 <a th:href="@{/edit-comments/{id}(id=${comment.id})}">
                     <input type="button" value="編集">

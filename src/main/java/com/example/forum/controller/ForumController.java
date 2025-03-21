@@ -150,4 +150,15 @@ public class ForumController {
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
+
+    /*
+    コメント削除処理
+     */
+    @DeleteMapping("/delete-comments/{id}")
+    public ModelAndView deleteCommentsContent(@PathVariable Integer id) {
+        // 投稿をテーブルに格納
+        commentsService.deleteComments(id);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
 }

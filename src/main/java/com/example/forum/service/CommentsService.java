@@ -70,4 +70,11 @@ public class CommentsService {
         List<CommentsForm> comments = setCommentsForm(results);
         return comments.get(0);
     }
+
+    /*
+    コメント削除処理
+     */
+    public void deleteComments(Integer id) {
+        commentsRepository.deleteById(id);
+    }
 }
