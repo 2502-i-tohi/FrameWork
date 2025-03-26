@@ -18,10 +18,10 @@ public class ReportService {
     ReportRepository reportRepository;
 
     /*
-     * レコード全件取得処理
+     * レコード全件取得処理(更新日時順)
      */
     public List<ReportForm> findAllReport() {
-        List<Report> results = reportRepository.findAllByOrderByIdDesc();
+        List<Report> results = reportRepository.findAllByOrderByUpdatedAtDesc();
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }

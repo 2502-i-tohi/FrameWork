@@ -3,11 +3,13 @@ package com.example.forum.service;
 import com.example.forum.controller.form.CommentsForm;
 import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.CommentsRepository;
+import com.example.forum.repository.ReportRepository;
 import com.example.forum.repository.entity.Comments;
 import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,9 @@ import java.util.List;
 public class CommentsService {
     @Autowired
     CommentsRepository commentsRepository;
+
+    @Autowired
+    ReportRepository reportRepository;
 
     /*
     コメント全件取得処理
@@ -47,7 +52,15 @@ public class CommentsService {
      */
     public void saveComments(CommentsForm reqComments) {
         Comments saveComments = setCommentsEntity(reqComments);
+        saveComments.setUpdatedAt(LocalDateTime.now());
         commentsRepository.save(saveComments);
+
+        // 対応する投稿の更新日時を更新
+        Report report = reportRepository.findById(reqComments.getContentId()).orElse(null);
+        if (report != null) {
+            report.setUpdatedAt(LocalDateTime.now());
+            reportRepository.save(report);
+        }
     }
 
     /*

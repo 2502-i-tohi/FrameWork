@@ -7,6 +7,8 @@ import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -79,7 +81,17 @@ public class ForumController {
      * 新規投稿処理
      */
     @PostMapping("/add")
-    public ModelAndView addContent(@ModelAttribute("formModel") ReportForm reportForm){
+    public ModelAndView addContent(@Validated @ModelAttribute("formModel") ReportForm reportForm, BindingResult result){
+        // バリデーションエラーがある場合
+        if(result.hasErrors()){
+            ModelAndView mav = new ModelAndView();
+            // 画面遷移先を指定
+            mav.setViewName("/new");
+            // 準備した空のFormを保管
+            mav.addObject("formModel", reportForm);
+            return mav;
+        }
+
         // 投稿をテーブルに格納
         reportService.saveReport(reportForm);
         // rootへリダイレクト
@@ -117,7 +129,16 @@ public class ForumController {
      */
     @PutMapping("/update/{id}")
     public ModelAndView updateContent (@PathVariable Integer id,
-                                       @ModelAttribute("formModel") ReportForm report) {
+                                       @Validated @ModelAttribute("formModel") ReportForm report, BindingResult result) {
+        // バリデーションエラーがある場合
+        if(result.hasErrors()){
+            ModelAndView mav = new ModelAndView();
+            // 画面遷移先を指定
+            mav.setViewName("/edit");
+            mav.addObject("formModel", report);
+            return mav;
+        }
+
         // UrlParameterのidを更新するentityにセット
         report.setId(id);
         // 編集した投稿を更新
